@@ -1,0 +1,17 @@
+frame.len
+radiotap.length
+radiotap.dbm_antsignal
+wlan.duration
+radiotap.present.tsft
+radiotap.channel.freq
+radiotap.channel.flags.cck
+radiotap.channel.flags.ofdm
+wlan.fc.type
+wlan.fc.subtype
+wlan.fc.ds
+wlan.fc.frag
+wlan.fc.retry
+wlan.fc.pwrmgt
+wlan.fc.moredata
+wlan.fc.protected
+attack_map
