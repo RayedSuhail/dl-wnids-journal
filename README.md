@@ -1,4 +1,4 @@
-# Transfer Learning on Aegean Wi-Fi Intrusion Dataset
+# Lightweight CNN-Based Wi-Fi Intrusion Detection Using 2D Traffic Representations
 
 This repository will track the code and changes made with respect to the project that Rayed Suhail Ahmad is doing under Dr. Quamar Niyaz.
 
