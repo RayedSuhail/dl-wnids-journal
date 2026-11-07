@@ -7,6 +7,10 @@ Created on Wed Sep 13 18:35:41 2023
 
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
+
+import matplotlib as mpl
+from matplotlib.colors import LinearSegmentedColormap, ListedColormap
 
 from data_loader import fetch_input_output
 from helper_functions import DATA_TYPES
@@ -19,6 +23,34 @@ def plot_history_metric(history, metric, title, has_valid=True):
     plt.title(title)
     plt.ylabel(metric)
     plt.xlabel("epoch")
+    plt.show()
+
+def show_mat(mat, save_path = '', colormap = 'viridis'):   
+    viridis_big = mpl.colormaps['viridis']
+    newcmp = ListedColormap(viridis_big(np.linspace(0.0, 0.55, 512)))
+    mpl.rcParams.update({'figure.figsize': [12, 12]})
+    mpl.rcParams.update({'font.size': 18})
+     
+    plt.imshow(mat, cmap=newcmp)
+    
+    if mat.shape[0] == 16:
+        plt.xticks([0, 5, 10, 15], [0, 5, 10, 15])
+        plt.yticks([0, 5, 10, 15], [0, 5, 10, 15])
+    elif mat.shape[0] == 4:
+        plt.xticks([0, 1, 2, 3], [0, 1, 2, 3])
+        plt.yticks([0, 1, 2, 3], [0, 1, 2, 3])
+    
+    # Loop over data dimensions and create text annotations.
+    for i in range(mat.shape[0]):
+        for j in range(mat.shape[1]):
+            text = plt.text(j, i, int(mat[i, j]),
+                           ha="center", va="center", color="w")
+    
+    plt.title(save_path)
+    plt.tight_layout()
+    
+    if save_path:
+        plt.savefig(f'../plots/matrices/{save_path}.png', dpi=900, bbox_inches='tight')
     plt.show()
 
 def compare_dataset_shapes(is_multiclass: bool):

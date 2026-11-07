@@ -13,6 +13,10 @@ from keras.layers import Conv2D, AveragePooling2D
 from keras.layers import Conv1D, AveragePooling1D
 from tensorflow.keras.optimizers import Adam
 
+from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
+import lightgbm as lgb
+from xgboost import XGBClassifier
+
 from helper_functions import get_model_name, MODEL_NAMES, CLASSES
 
 def get_full_ML_model(model_name: MODEL_NAMES, input_shape, is_multiclass, matrix_type):
@@ -31,6 +35,62 @@ def get_full_ML_model(model_name: MODEL_NAMES, input_shape, is_multiclass, matri
         metrics = metrics_list, # F1Score(average='weighted', threshold=0.5, name='f1_score')
     )
     return base_model
+
+def LightGBM(is_multiclass: bool, random_state: int = 42):
+    """
+    Returns an uninitialized LightGBM Classifier configured for binary or multi-class classification.
+    """
+    objective = 'multiclass' if is_multiclass else 'binary'
+    num_class = len(CLASSES) if is_multiclass else None
+    
+    return lgb.LGBMClassifier(
+        n_estimators=100,
+        learning_rate=0.1,
+        objective=objective,
+        num_class=num_class,
+        random_state=random_state,
+        n_jobs=-1,
+        verbose=-1
+    )
+
+def XGBoost(is_multiclass: bool, random_state: int = 42):
+    """
+    Returns an uninitialized XGBoost Classifier configured for binary or multi-class classification.
+    """
+    eval_metric = 'mlogloss' if is_multiclass else 'logloss'
+    objective = 'multi:softprob' if is_multiclass else 'binary:logistic'
+    
+    return XGBClassifier(
+        n_estimators=100,
+        learning_rate=0.1,
+        max_depth=6,
+        objective=objective,
+        eval_metric=eval_metric,
+        random_state=random_state,
+        n_jobs=-1
+    )
+
+def ExtraTrees(is_multiclass: bool, random_state: int = 42):
+    """
+    Returns an uninitialized Extra Trees Classifier.
+    """
+    return ExtraTreesClassifier(
+        n_estimators=100,
+        criterion='gini',
+        random_state=random_state,
+        n_jobs=-1
+    )
+
+def RandomForest(is_multiclass: bool, random_state: int = 42):
+    """
+    Returns an uninitialized Random Forest Classifier.
+    """
+    return RandomForestClassifier(
+        n_estimators=100,
+        criterion='gini',
+        random_state=random_state,
+        n_jobs=-1
+    )
 
 def CNN2D_2xConvPool(input_shape, is_multiclass: bool, matrix_type) -> keras.engine.functional.Functional:
     """

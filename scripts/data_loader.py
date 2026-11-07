@@ -5,6 +5,8 @@ Created on Wed Sep 13 17:43:49 2023
 @author: ahmad104
 """
 
+import random
+
 import pandas as pd
 import numpy as np
 
@@ -12,6 +14,8 @@ from sklearn.preprocessing import MinMaxScaler
 from pyts.image import GramianAngularField
 
 from helper_functions import get_dataset_filename_start, DATA_TYPES, FEATURES_LIST, MATRIX_TYPES
+
+from data_visualizers import show_mat
 
 
 def fetch_input_output(data_type: str, is_multiclass: bool):
@@ -54,11 +58,14 @@ def perform_matrix_transform(X, method: str, gaf_method='s'):
 def perform_gramian_transform(X, method='s'):
     gaf = GramianAngularField(image_size=X.shape[1], method=method)
     image_shape = (X.shape[1], X.shape[1], 1)
+
+    show_mat(gaf.transform(X)[0])
+
     return gaf.transform(X).reshape(X.shape[0], *image_shape)
 
 def create_grayscale_matrix(row, use_circulant: bool, size=16):
     mat = np.empty([size, size])
-    circulant_idx = create_circulant_matrix(list(range(size)), size)
+    circulant_idx = create_circulant_matrix(list(range(size)), size, False)
     for idx_i in range(size):
         for idx_j in range(size):
             if size == (len(FEATURES_LIST) - 1) and use_circulant:
@@ -69,6 +76,9 @@ def create_grayscale_matrix(row, use_circulant: bool, size=16):
                 else:
                     idx = (idx_i + idx_j) % size
                 mat[idx_i, idx_j] = row[idx]
+    
+    show_mat(mat)
+    
     return mat
 
 def create_corr_matrix(row, size):
@@ -80,22 +90,37 @@ def create_corr_matrix(row, size):
             else:
                 idx = (idx_i + idx_j) % size
             mat[idx_i, idx_j] = row[idx]
+
+    show_mat(mat)
+
     # Correlation same in cyclic or circulant
     corr_mat = pd.DataFrame(mat).corr()
     return corr_mat
 
-def create_circulant_matrix(row, size):
+def create_circulant_matrix(row, size, show_matrix = True):
     mat = np.empty((size, size))
     for i in range(size):
         mat[i, i:] = row[:size-i]
         mat[i, :i] = row[size-i:]
+
+    if show_matrix:
+        show_mat(mat.T)
+
     return mat.T
 
-def test_images(normalize_data = False):
-    X = np.array([[0, 1, 2, 3, 4 ,5 ,6, 7 ,8 ,9 ,10, 11, 12, 13, 14, 15]])
+def test_images(normalize_data = False, use_record = False):
+    idxs = [0, 1, 2, 3, 4 ,5 ,6, 7 ,8 ,9 ,10, 11, 12, 13, 14, 15]
+    
+    if use_record:
+        X, _ = fetch_input_output(DATA_TYPES.TRAINING.value, False)
+        X = np.array([X.iloc[random.randint(0, X.shape[0] - 1)]])
+    else:
+        X = np.array([idxs])
     globals()['X'] = X
     if normalize_data:
         X = normalize_data(X, fetch_scaler((-1, 1), False))
         globals()['X_scaled'] = X
     for mat_type in MATRIX_TYPES:
         globals()[mat_type.value] = perform_matrix_transform(X, mat_type.value)[0, :, :, 0]
+        
+test_images(False, True)

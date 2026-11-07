@@ -37,6 +37,10 @@ class MATRIX_TYPES(BaseEnum):
     CIRCULANT_TRANSFORM = '16_circulant_transform'
 
 class MODEL_NAMES(BaseEnum):
+    LIGHTGBM = 'LightGBM'
+    XGBOOST = 'XGBoost'
+    EXTRA_TREES = 'ExtraTrees'
+    RANDOM_FOREST = 'RandomForest'
     CNN2_2D = 'CNN2D_2xConvPool'
     CNN1_2D = 'CNN2D_1xConvPool'
     CNN2_1D = 'CNN1D_2xConvPool'

@@ -14,7 +14,7 @@ from helper_functions import MODEL_NAMES, DATA_TYPES, model_checkpoint, get_mode
 from data_loader import fetch_input_output, fetch_scaler, normalize_data, perform_matrix_transform
 
 BATCH_SIZE = 32
-EPOCHS = 1
+EPOCHS = 100
 MULTICLASSES = [True, False]
 
 
@@ -59,13 +59,4 @@ if __name__ == "__main__":
                 p.start()
                 p.join()
 
-
-# =============================================================================
-# TEST CODE
-# =============================================================================
-# train_model('ANN_512Neurons_20Dropout', True, '16_corr_transform')
-
-# model_name =  get_model_name('ANN_512Neurons_20Dropout', True, '16_corr_transform')
-# with open(get_model_filename_start(model_name) + 'history.pickle', "rb") as file_pi:
-#     history = pickle.load(file_pi)
 
